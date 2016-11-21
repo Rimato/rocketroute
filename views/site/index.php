@@ -1,13 +1,28 @@
 <?php
 
 use app\assets\index\IndexAsset;
-
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 $this->title = 'My Yii Application';
 
 IndexAsset::register($this);
 
 ?>
+
+<?php $form = ActiveForm::begin([
+    'enableAjaxValidation' => true,
+]); ?>
+
+<?php $form = ActiveForm::begin(['id' => 'icaoForm',  'enableClientValidation' => true,]); ?>
+<?= $form->field($model, 'ICAO') ?>
+
+<div class="form-group">
+    <?= Html::button('Submit', ['class' => 'btn btn-primary', 'id' => 'submit']) ?>
+</div>
+
+<?php ActiveForm::end(); ?>
+
 <div style='overflow:hidden;height:440px;width:700px;'><div id='gmap_canvas' style='height:440px;width:700px;'>
 
 </div>

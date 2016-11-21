@@ -2,12 +2,10 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\filters\AccessControl;
+use app\services\notam\NOTAMService;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\IndexInputModel;
+use yii\widgets\ActiveForm;
 
 class SiteController extends Controller
 {
@@ -24,13 +22,33 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
+     * Displays index page.
      *
      * @return string
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $service = new NOTAMService(['ICAO' => 'EGKA']);
+        $model = new IndexInputModel();
+        $service->getICAOData();  exit;
+        return $this->render('index', ['model' => $model]);
+    }
+
+
+    /**
+     * Return in
+     * @throws \yii\web\HttpException
+     */
+    public function actionGetIcaoInfo(){
+
+        /** @var IndexInputModel $model used for input validation*/
+        $model = new IndexInputModel();
+        $model->ICAO = \Yii::$app->request->post('icao');
+        if( $model->validate()){
+            $service = new NOTAMService(['ICAO' => $model->ICAO]);
+            return json_encode($service->getICAOData());
+        }
+        throw new \yii\web\HttpException(400, 'Something went wrong');
     }
 
 }
