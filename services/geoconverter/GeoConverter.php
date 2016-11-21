@@ -12,6 +12,9 @@ class GeoConverter extends AbstractService {
     /** @var  string */
     private $_DMSString;
 
+    /**
+     * @throws Exception
+     */
     private function parseDMS()
     {
         $pattern = '/(\d{2})(\d{2})([ns]{1})(\d{3})(\d{2})([we]{1})/i';
@@ -19,10 +22,13 @@ class GeoConverter extends AbstractService {
         if(preg_match($pattern, $this->_DMSString, $res)){
             $this->_parsedData = $res;
         } else {
-            throw new Exception('Invalid geolocation');
+            throw new Exception('Invalid geolocation string');
         }
     }
 
+    /**
+     * @return array
+     */
     private function convert()
     {
         $latCoef = $this->_parsedData[3] == 'N' ? 1 : -1;
@@ -33,6 +39,10 @@ class GeoConverter extends AbstractService {
         ];
     }
 
+    /**
+     * @param string $dms
+     * @return array
+     */
     public function convertDMSToDecimal(string $dms)
     {
         $this->_DMSString = $dms;

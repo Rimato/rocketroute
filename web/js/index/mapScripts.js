@@ -13,13 +13,9 @@ $( document ).ready(function() {
                 icon: ' http://www.clker.com/cliparts/H/Z/0/R/f/S/warning-icon-th.png'
             }
         );
-        infowindow = new google.maps.InfoWindow({content:'<strong>Название</strong><br>Moscow, Russia<br>'});
-        google.maps.event.addListener(marker, 'click', function(){infowindow.open(map,marker);});infowindow.open(map,marker);
+
     }
-
-
     google.maps.event.addDomListener(window, 'load', init_map);
-
 
     $('#submit').on('click', function(){
         $.ajax({
@@ -29,10 +25,14 @@ $( document ).ready(function() {
             data: { icao: $('#indexinputmodel-icao').val() }
         })
         .done(function( data ) {
-            console.log(data[0]);
-            marker.setPosition( new google.maps.LatLng(data[0], data[1]) );
-            map.panTo( new google.maps.LatLng(data[0], data[1]) );
+            google.maps.event.clearListeners(marker, 'click');
+            marker.setPosition( new google.maps.LatLng(data['location'][0], data['location'][1]) );
+            map.panTo( new google.maps.LatLng(data['location'][0], data['location'][1]) );
+            infowindow = new google.maps.InfoWindow({content:data['iteme']});
+            google.maps.event.addListener(marker, 'click', function(){
+                infowindow.open(map,marker);
+            });
+            infowindow.open(map,marker);
         });
     })
-
 });

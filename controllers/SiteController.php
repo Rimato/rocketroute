@@ -28,9 +28,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $service = new NOTAMService(['ICAO' => 'EGKA']);
         $model = new IndexInputModel();
-        $service->getICAOData();  exit;
         return $this->render('index', ['model' => $model]);
     }
 
@@ -45,6 +43,7 @@ class SiteController extends Controller
         $model = new IndexInputModel();
         $model->ICAO = \Yii::$app->request->post('icao');
         if( $model->validate()){
+
             $service = new NOTAMService(['ICAO' => $model->ICAO]);
             return json_encode($service->getICAOData());
         }

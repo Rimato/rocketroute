@@ -47,20 +47,23 @@ class NOTAMService extends AbstractService {
     public function getICAOData()
     {
         /** @var NOTAMGetFromRocketRouteService $NOTANGetService */
-        $NOTANGetService = $this->getDependency('getNOTAMByICAMInterface');
-        $NOTANGetService->setToken(\Yii::$app->params['RocketRouteToken']);
-        $NOTANGetService->setUser(\Yii::$app->params['RocketRouteUser']);
-        $NOTANGetService->setReqURL(\Yii::$app->params['ReqURL']);
-        $NOTANGetService->setICAO($this->getICAO());
+        $NOTAMGetService = $this->getDependency('getNOTAMByICAMInterface');
+        $NOTAMGetService->setToken(\Yii::$app->params['RocketRouteToken']);
+        $NOTAMGetService->setUser(\Yii::$app->params['RocketRouteUser']);
+        $NOTAMGetService->setReqURL(\Yii::$app->params['ReqURL']);
+        $NOTAMGetService->setICAO($this->getICAO());
+        $NOTAMXML = $NOTAMGetService->getNOTAMByICAO();
 
-        /** @var NOTAMPArceInterface $parser */
+            /** @var NOTAMPArceInterface $parser */
         $parser = $this->getDependency('NOTAMParceInterface');
         $entity = $parser->parseNOTAMXML($NOTAMXML);
 
         /** @var GeoConverter $converter */
         $converter = $this->getDependency('geoConverter');
-        $decimail = $converter->convertDMSToDecimal($entity->getLocation());
-        return $decimail;
+        return [
+            'location' => $converter->convertDMSToDecimal($entity->getLocation()),
+            'iteme' => $entity->getItemEData()
+        ];
     }
 
 }
